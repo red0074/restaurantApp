@@ -1,0 +1,201 @@
+.dish-item {
+  background-color: #ffffff;
+  padding: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid #f1f5f9;
+  list-style-type: none;
+}
+
+.dish-item:last-child {
+  border-bottom: none;
+}
+
+.dish-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Veg/Non-veg Indicator */
+.dish-type-indicator {
+  width: 20px;
+  height: 20px;
+  border: 2px solid;
+  border-radius: 2px;
+  position: relative;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Green indicator for VEG */
+.veg-indicator {
+  border-color: #0f9d58;
+}
+
+.veg-indicator::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background-color: #0f9d58;
+  border-radius: 50%;
+}
+
+/* Red indicator for NON-VEG */
+.non-veg-indicator {
+  border-color: #db4437;
+}
+
+.non-veg-indicator::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background-color: #db4437;
+  border-radius: 50%;
+}
+
+.dish-name {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.dish-price-container {
+  margin-bottom: 12px;
+}
+
+.dish-price {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+}
+
+.dish-description {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+  max-width: 600px;
+}
+
+.dish-calories {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0 0 8px 0;
+}
+
+.customizations-available {
+  font-size: 13px;
+  color: #f7931e;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+}
+
+.dish-actions {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.quantity-button {
+  background-color: #22c55e;
+  border: none;
+  cursor: pointer;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  min-width: 40px;
+  height: 40px;
+}
+
+.quantity-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.quantity-button:active {
+  transform: scale(0.95);
+}
+
+.quantity-count {
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 18px;
+  min-width: 40px;
+  text-align: center;
+  margin: 0;
+}
+
+.not-available-text {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 14px;
+  margin: 0;
+  margin-top: auto;
+}
+
+.dish-image-container {
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.dish-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .dish-item {
+    padding: 20px 0;
+    gap: 16px;
+  }
+
+  .dish-name {
+    font-size: 18px;
+  }
+
+  .dish-description {
+    font-size: 13px;
+  }
+
+  .dish-image-container {
+    width: 120px;
+    height: 120px;
+  }
+
+  .quantity-button {
+    min-width: 36px;
+    height: 36px;
+    padding: 6px 12px;
+    font-size: 18px;
+  }
+
+  .quantity-count {
+    font-size: 16px;
+    min-width: 35px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .dish-image-container {
+    width: 100px;
+    height: 100px;
+  }
+}
