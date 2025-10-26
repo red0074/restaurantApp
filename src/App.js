@@ -1,9 +1,12 @@
 import {Component} from 'react'
-import {BsFillStarFill} from 'react-icons/bs'
-import {BiRupee} from 'react-icons/bi'
+import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
+import LoginForm from './components/LoginForm'
+import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header'
 import DishCategory from './components/DishCategory'
 import LoadingView from './components/LoadingView'
+import Cart from './components/Cart'
+import CartContext from './context/CartContext'
 import './App.css'
 
 const apiStatusConstants = {
@@ -20,6 +23,7 @@ class App extends Component {
     selectedCategoryIndex: 0,
     cart: {},
     apiStatus: apiStatusConstants.initial,
+    cartList: [],
   }
 
   componentDidMount() {
@@ -27,7 +31,6 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    // Cleanup to prevent Jest environment errors
     this.setState = () => {}
   }
 
@@ -101,10 +104,75 @@ class App extends Component {
           },
         }
       },
-      () => {
-        // Callback after state update completes
-      },
+      () => {},
     )
+  }
+
+  addCartItem = dish => {
+    const {cartList} = this.state
+    const dishObject = cartList.find(
+      eachCartItem => eachCartItem.dish_id === dish.dish_id,
+    )
+
+    if (dishObject) {
+      this.setState(prevState => ({
+        cartList: prevState.cartList.map(eachCartItem => {
+          if (dishObject.dish_id === eachCartItem.dish_id) {
+            const updatedQuantity = eachCartItem.quantity + dish.quantity
+            return {...eachCartItem, quantity: updatedQuantity}
+          }
+          return eachCartItem
+        }),
+      }))
+    } else {
+      const updatedCartList = [...cartList, dish]
+      this.setState({cartList: updatedCartList})
+    }
+  }
+
+  removeCartItem = dishId => {
+    const {cartList} = this.state
+    const updatedCartList = cartList.filter(
+      eachCartItem => eachCartItem.dish_id !== dishId,
+    )
+    this.setState({cartList: updatedCartList})
+  }
+
+  removeAllCartItems = () => {
+    this.setState({cartList: []})
+  }
+
+  incrementCartItemQuantity = dishId => {
+    this.setState(prevState => ({
+      cartList: prevState.cartList.map(eachCartItem => {
+        if (eachCartItem.dish_id === dishId) {
+          const updatedQuantity = eachCartItem.quantity + 1
+          return {...eachCartItem, quantity: updatedQuantity}
+        }
+        return eachCartItem
+      }),
+    }))
+  }
+
+  decrementCartItemQuantity = dishId => {
+    const {cartList} = this.state
+    const dishObject = cartList.find(
+      eachCartItem => eachCartItem.dish_id === dishId,
+    )
+
+    if (dishObject.quantity > 1) {
+      this.setState(prevState => ({
+        cartList: prevState.cartList.map(eachCartItem => {
+          if (eachCartItem.dish_id === dishId) {
+            const updatedQuantity = eachCartItem.quantity - 1
+            return {...eachCartItem, quantity: updatedQuantity}
+          }
+          return eachCartItem
+        }),
+      }))
+    } else {
+      this.removeCartItem(dishId)
+    }
   }
 
   renderCategoryTabs = () => {
@@ -187,18 +255,39 @@ class App extends Component {
     }
   }
 
-  render() {
+  renderHome = () => {
     const {restaurantData} = this.state
-    const cartCount = this.getTotalCartCount()
+    return (
+      <>
+        <Header restaurantName={restaurantData.restaurantName} />
+        <div className="restaurant-content">{this.renderViews()}</div>
+      </>
+    )
+  }
+
+  render() {
+    const {cartList} = this.state
 
     return (
-      <div className="app-container">
-        <Header
-          restaurantName={restaurantData.restaurantName}
-          cartCount={cartCount}
-        />
-        <div className="restaurant-content">{this.renderViews()}</div>
-      </div>
+      <BrowserRouter>
+        <CartContext.Provider
+          value={{
+            cartList,
+            addCartItem: this.addCartItem,
+            removeCartItem: this.removeCartItem,
+            removeAllCartItems: this.removeAllCartItems,
+            incrementCartItemQuantity: this.incrementCartItemQuantity,
+            decrementCartItemQuantity: this.decrementCartItemQuantity,
+          }}
+        >
+          <Switch>
+            <Route exact path="/login" component={LoginForm} />
+            <ProtectedRoute exact path="/" render={this.renderHome} />
+            <ProtectedRoute exact path="/cart" component={Cart} />
+            <Redirect to="/" />
+          </Switch>
+        </CartContext.Provider>
+      </BrowserRouter>
     )
   }
 }
